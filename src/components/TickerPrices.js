@@ -4,8 +4,8 @@ import styled from 'styled-components'
 
 const TickerPrices = () => {
  const [prices, setPrices] = useState({})
+
  const symbols = ['OP-USDT', 'BTC-USDT']
- const [refreshKey, setRefreshKey] = useState(Date.now())
 
  useEffect(() => {
   const fetchPrices = async () => {
@@ -36,16 +36,16 @@ const TickerPrices = () => {
    }
 
    setPrices(newPrices)
-   setRefreshKey(Date.now())
   }
 
+  fetchPrices()
   const interval = setInterval(fetchPrices, 10000)
 
   return () => clearInterval(interval)
  }, [prices, symbols])
 
  return (
-  <Wrapper key={refreshKey}>
+  <Wrapper>
    <table>
     <thead>
      <tr>
