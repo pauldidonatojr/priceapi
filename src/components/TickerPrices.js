@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
+
 const TickerPrices = () => {
  const [prices, setPrices] = useState({})
-
  const symbols = ['OP-USDT', 'BTC-USDT']
+ const [refreshKey, setRefreshKey] = useState(Date.now())
 
  useEffect(() => {
   const fetchPrices = async () => {
@@ -35,6 +36,7 @@ const TickerPrices = () => {
    }
 
    setPrices(newPrices)
+   setRefreshKey(Date.now())
   }
 
   const interval = setInterval(fetchPrices, 10000)
@@ -42,30 +44,30 @@ const TickerPrices = () => {
   return () => clearInterval(interval)
  }, [prices, symbols])
 
-    return (
-     <Wrapper>
-      <table>
-       <thead>
-        <tr>
-         <th>Symbol</th>
-         <th>Price</th>
-         <th>Previous Price</th>
-         <th>% Change</th>
-        </tr>
-       </thead>
-       <tbody>
-        {symbols.map((symbol) => (
-         <tr key={symbol}>
-          <td>{symbol}</td>
-          <td>{prices[symbol]?.currentPrice?.toFixed(6)}</td>
-          <td>{prices[symbol]?.previousPrice?.toFixed(6)}</td>
-          <td>{prices[symbol]?.change}%</td>
-         </tr>
-        ))}
-       </tbody>
-      </table>
-     </Wrapper>
-    )
+ return (
+  <Wrapper key={refreshKey}>
+   <table>
+    <thead>
+     <tr>
+      <th>Symbol</th>
+      <th>Price</th>
+      <th>Previous Price</th>
+      <th>% Change</th>
+     </tr>
+    </thead>
+    <tbody>
+     {symbols.map((symbol) => (
+      <tr key={symbol}>
+       <td>{symbol}</td>
+       <td>{prices[symbol]?.currentPrice?.toFixed(6)}</td>
+       <td>{prices[symbol]?.previousPrice?.toFixed(6)}</td>
+       <td>{prices[symbol]?.change}%</td>
+      </tr>
+     ))}
+    </tbody>
+   </table>
+  </Wrapper>
+ )
 }
 
 const Wrapper = styled.div`
@@ -96,4 +98,5 @@ const Wrapper = styled.div`
   background-color: #ddd;
  }
 `
+
 export default TickerPrices
